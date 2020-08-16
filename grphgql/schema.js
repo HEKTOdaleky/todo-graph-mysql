@@ -7,6 +7,14 @@ type User {
     email: String!
 }
 
+type Todo {
+    id: ID!
+    title: String!
+    done: Boolean!
+    createdAt: String
+    updatedAt: String
+}
+
 type TestType {
     count: Int!
     users: [User!]!
@@ -15,6 +23,7 @@ type TestType {
     type Query {
         test: TestType!
         random(min: Int!, max: Int!, count: Int!): [Float!]!
+        getTodos: [Todo!]!
     }
     
     input UserInput {
