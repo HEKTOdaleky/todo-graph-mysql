@@ -71,24 +71,43 @@ new Vue({
                 .catch(e => console.log(e))
         },
         removeTodo(id) {
-            fetch('/api/todo/' + id, {
-                method: 'delete',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({done: true})
+
+            const query = `mutation {
+        removeTodo(id: "${id}")
+    }
+   `
+
+            fetch('/graphql', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({query})
             })
-                .then(res => this.todos = this.todos.filter(t => t.id !== id))
+                .then(() => this.todos = this.todos.filter(t => t.id !== id))
                 .catch(e => console.log(e))
         },
         checkTodo(id) {
-            fetch('/api/todo/' + id, {
-                method: 'put',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({done: true})
+
+            const query = `mutation {
+        completeTodo(id: "${id}") {
+            updatedAt
+        }
+    }
+   `
+            fetch('/graphql', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({query})
             })
                 .then(res => res.json())
-                .then(({todo}) => {
-                    const idx = this.todos.findIndex(t => t.id === todo.id)
-                    this.todos[idx].updatedAt = todo.updatedAt
+                .then(response => {
+                    const idx = this.todos.findIndex(t => t.id === id)
+                    this.todos[idx].updatedAt = +response.data.completeTodo.updatedAt
                     this.todos[idx].done = true
                 })
                 .catch(e => console.log(e))

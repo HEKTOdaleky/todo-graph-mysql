@@ -38,5 +38,7 @@ type TestType {
     type Mutation {
         addTestUser(user: UserInput!): User!
         createTodo(todo: TodoInput!): Todo!
+        completeTodo(id: ID!): Todo!
+        removeTodo(id: ID!): Boolean!
     }
 `)
